@@ -180,6 +180,7 @@ module Stage3(ID_EX_Write, Pc,
 	end
 
 	always @(posedge clk) begin
+		$display("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<BranchCond, IsBranch_REG, IsJump_REG %x %x %x", BranchCond, IsBranch_REG, IsJump_REG);
 		if(ID_EX_Write) begin
 			Pc_REG = Pc;
 			ReadData1_REG = ReadData1;
@@ -206,6 +207,7 @@ module Stage3(ID_EX_Write, Pc,
 			Valid_REG = Valid;
 			JumpTargetAddr_REG = JumpTargetAddr;
 		end
+		//if(IsJump) $display("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&PASSEDJUMP");
 
 
 		if(!reset_n) begin
