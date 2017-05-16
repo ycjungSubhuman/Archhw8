@@ -22,6 +22,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 	reg reading;
 	reg writing;
 
+
 	//Stage 1 Add input PcWrite,
 	//Stage 2 Add Input IF_ID_Write, input InsertBubble
 	//Stage 3 Add output ID_EX_MemRead
@@ -38,20 +39,22 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		grant_write = 0;
 		reading = 0;
 		writing = 0;
+		forcebubble = 0;
+		restore = 0;
 	end
-
+	reg forcebubble;
+	reg restore;
 	always @(*) begin
-				
-		/* stalling for i read*/
-		if(!grant_inst && i_readM) begin
-			PcWrite = 0;
-			IF_ID_Write = 0;
-			ID_EX_Write = 0;
-			EX_MEM_Write = 0;
-			MEM_WB_Write = 0;
-			InsertBubble = 1;
-			reading_inst = 1;		   
+		if(restore) begin
+		   	PcWrite = a;
+			IF_ID_Write = b;
+			ID_EX_Write = c;
+			EX_MEM_Write = d;
+			MEM_WB_Write = e;
+			InsertBubble = f;
+			restore = 0;
 		end
+
 		if(grant_inst && !writing && !reading) begin
 			PcWrite = 1;
 			IF_ID_Write = 1;
@@ -65,6 +68,9 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		
 		/* stalling for d read prepare*/
 		if(ID_EX_MemRead || ID_EX_MemWrite) begin
+			if(grant_inst) begin
+				forcebubble = 1;
+			end
 			PcWrite = 0;
 			IF_ID_Write = 0;
 			ID_EX_Write = 1;
@@ -73,6 +79,35 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			InsertBubble = 1;
 //			reading = 1;			   
 		end
+		
+				/* stalling for i read*/
+		if(!grant_inst && i_readM) begin
+			PcWrite = 0;
+			IF_ID_Write = 0;
+			ID_EX_Write = 0;
+			EX_MEM_Write = 0;
+			MEM_WB_Write = 0;
+			InsertBubble = 0;
+			reading_inst = 1;		   
+		end
+		
+		if(forcebubble) begin
+			a = PcWrite;
+			b = IF_ID_Write;
+			c = ID_EX_Write;
+			d = EX_MEM_Write;
+			e = MEM_WB_Write;
+			f = InsertBubble;
+		  	PcWrite = 0;
+			IF_ID_Write = 0;
+			ID_EX_Write = 1;
+			EX_MEM_Write = 1;
+			MEM_WB_Write = 1;
+			InsertBubble = 1;
+			forcebubble = 0;
+			restore = 1;
+		end
+		
 		else if(!reading && !reading_inst && !writing) begin
 			PcWrite = 1;
 			IF_ID_Write = 1;
@@ -91,7 +126,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			ID_EX_Write = 0;
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
-			InsertBubble = 1;
+			InsertBubble = 0;
 			reading = 1;			  
 		end
 		if(grant_read && !reading_inst && !writing) begin
@@ -110,7 +145,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			ID_EX_Write = 0;
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
-			InsertBubble = 1;
+			InsertBubble = 0;
 			writing = 1; 				
 		end
 		if(grant_write && !reading_inst && !reading) begin
@@ -124,6 +159,12 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		end
 
 	end
+	reg a;
+	reg b;
+	reg c;
+	reg d;
+	reg e;
+	reg f;
 
 	always @(posedge clk) begin
 		if(grant_inst) begin
@@ -149,6 +190,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			grant_write = 1;
 			writing=0;
 		end
-		if(InsertBubble) $display("STALLED");
+		if(InsertBubble && !IF_ID_Write) $display("Bubble");
+		else $display("NoBubble");
 	end
 endmodule

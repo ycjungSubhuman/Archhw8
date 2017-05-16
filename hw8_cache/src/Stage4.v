@@ -106,7 +106,8 @@ module Stage4(EX_MEM_Write, Pc,
 			RegWriteSrc_REG = RegWriteSrc;
 			RegWrite_REG = RegWrite;
 			IsHalted_REG = IsHalted;
-			PCMux_REG = PCMux;
+			PCMux_REG = PCMux; 
+			$display("))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))PCMux_REG: %x", PCMux_REG);
 			Valid_REG = Valid;
 			OutputData_REG = OutputData;
 		end

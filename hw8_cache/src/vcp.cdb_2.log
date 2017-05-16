@@ -1,0 +1,14 @@
+Unhandled exception: 0xc0000005
+[Begin callstack dump]
+=== backtrace ====
+       0x5fcbb48 : ULM_RelPathToFullPathDir+0x1228 [C:\Aldec\Active-HDL-Student-Edition\bin\ulm.dll @ 0x5f70000 ]
+       0x5fffd3b : ADB_GetLastErrorString+0x1aafb [C:\Aldec\Active-HDL-Student-Edition\bin\ulm.dll @ 0x5f70000 ]
+      0x10be81e2 : Main::checkClassUnit+0x14d32 [C:\Aldec\Active-HDL-Student-Edition\bin\vca.dll @ 0x10000000 ]
+      0x10be8e02 : VCAStart+0x152 [C:\Aldec\Active-HDL-Student-Edition\bin\vca.dll @ 0x10000000 ]
+        0x402039 : ? [C:\Aldec\Active-HDL-Student-Edition\bin\vcp.exe @ 0x400000 ]
+        0x40d01b : ? [C:\Aldec\Active-HDL-Student-Edition\bin\vcp.exe @ 0x400000 ]
+      0x73a88744 : BaseThreadInitThunk+0x24 [C:\WINDOWS\System32\KERNEL32.DLL @ 0x73a70000 ]
+      0x76ff584d : RtlGetAppContainerNamedObjectPath+0xcd [C:\WINDOWS\SYSTEM32\ntdll.dll @ 0x76f90000 ]
+      0x77016331 : RtlCaptureContext+0xe1 [C:\WINDOWS\SYSTEM32\ntdll.dll @ 0x76f90000 ]
+==================
+[End callstack dump]
