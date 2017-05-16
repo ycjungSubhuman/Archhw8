@@ -1,0 +1,31 @@
+Active-HDL 10.3.3559.6081  2017-05-17 ¿ÀÀü 12:24:28
+
+Elaboration top modules:
+Verilog Module                cpu_TB
+
+
+---------------------------------------------------------------------------------------------
+Verilog Module          | Library   | Info | Compiler Version          | Compilation Options
+---------------------------------------------------------------------------------------------
+cpu_TB                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+cpu                     | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Datapath                | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+cache                   | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Stage1                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Hazard                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Stage2                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Forward                 | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Stage3                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Stage4                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Stage5                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+RegisterFiles           | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Control                 | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+ALU                     | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+Memory                  | hw8_cache |      | 10.3.3559.6081  (Windows) | -O2 -sv2k12
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+Library                 | Comment
+---------------------------------------------------------------------------------------------
+hw8_cache               | None
+---------------------------------------------------------------------------------------------

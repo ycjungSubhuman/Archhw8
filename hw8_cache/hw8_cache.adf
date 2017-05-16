@@ -64,12 +64,13 @@ Active_lib=
 .\src\Datapath.v=Verilog Source Code
 .\src\Forward.v=Verilog Source Code
 .\src\Hazard.v=Verilog Source Code
-.\src\Memory.v=Verilog Source Code
 .\src\opcodes.v=Verilog Source Code
 .\src\register_files.v=Verilog Source Code
 .\src\Stage1.v=Verilog Source Code
 .\src\Stage2.v=Verilog Source Code
 .\src\Stage3.v=Verilog Source Code
 .\src\Stage4.v=Verilog Source Code
+.\src\memory_hlt_added.v=Verilog Source Code
 .\src\Stage5.v=Verilog Source Code
+.\src\Memory.v=Verilog Source Code
 

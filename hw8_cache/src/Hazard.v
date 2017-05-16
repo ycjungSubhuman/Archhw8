@@ -42,27 +42,6 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 
 	always @(*) begin
 				
-		/* stalling for d read prepare*/
-		if(ID_EX_MemRead || ID_EX_MemWrite) begin
-			PcWrite = 0;
-			IF_ID_Write = 0;
-			ID_EX_Write = 1;
-			EX_MEM_Write = 1;
-			MEM_WB_Write = 1;
-			InsertBubble = 1;
-//			reading = 1;
-			$display("holololo2");
-		end
-		else if(!reading && !reading_inst && !writing) begin
-			PcWrite = 1;
-			IF_ID_Write = 1;
-			ID_EX_Write = 1;
-			EX_MEM_Write = 1;
-			MEM_WB_Write = 1;
-			InsertBubble = 0;
-			$display("holololo3");
-		end
-		
 		/* stalling for i read*/
 		if(!grant_inst && i_readM) begin
 			PcWrite = 0;
@@ -71,19 +50,38 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
 			InsertBubble = 1;
-			reading_inst = 1;
-			$display("holololo");
+			reading_inst = 1;		   
 		end
-		if(grant_inst) begin
+		if(grant_inst && !writing && !reading) begin
 			PcWrite = 1;
 			IF_ID_Write = 1;
 			ID_EX_Write = 1;
 			EX_MEM_Write = 1;
 			MEM_WB_Write = 1;
 			InsertBubble = 0;
-			reading_inst = 0;
-			$display("granted");
+	 
 		end
+		
+		
+		/* stalling for d read prepare*/
+		if(ID_EX_MemRead || ID_EX_MemWrite) begin
+			PcWrite = 0;
+			IF_ID_Write = 0;
+			ID_EX_Write = 1;
+			EX_MEM_Write = 1;
+			MEM_WB_Write = 1;
+			InsertBubble = 1;
+//			reading = 1;			   
+		end
+		else if(!reading && !reading_inst && !writing) begin
+			PcWrite = 1;
+			IF_ID_Write = 1;
+			ID_EX_Write = 1;
+			EX_MEM_Write = 1;
+			MEM_WB_Write = 1;
+			InsertBubble = 0;	 
+		end
+
 
 
 
@@ -94,18 +92,16 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
 			InsertBubble = 1;
-			reading = 1;
-			$display("holololo4");
+			reading = 1;			  
 		end
-		if(grant_read) begin
+		if(grant_read && !reading_inst && !writing) begin
 			PcWrite = 1;
 			IF_ID_Write = 1;
 			ID_EX_Write = 1;
 			EX_MEM_Write = 1;
 			MEM_WB_Write = 1;
 			InsertBubble = 0;
-			reading = 0;
-			$display("holololo5");
+			reading = 0;			  
 		end
 
 		if(!grant_write && d_writeM) begin
@@ -115,18 +111,16 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
 			InsertBubble = 1;
-			writing = 1; 
-			$display("holololo6");
+			writing = 1; 				
 		end
-		if(grant_write) begin
+		if(grant_write && !reading_inst && !reading) begin
 			PcWrite = 1;
 			IF_ID_Write = 1;
 			ID_EX_Write = 1;
 			EX_MEM_Write = 1;
 			MEM_WB_Write = 1;
 			InsertBubble = 0;
-			writing = 0;
-			$display("holololo7");
+			writing = 0;			 
 		end
 
 	end
@@ -137,6 +131,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		end
 		if(reading_inst && complete1) begin
 			grant_inst = 1;
+			reading_inst = 0;	
 		end
 
 		if(grant_read) begin
@@ -144,6 +139,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		end
 		if(reading && complete2) begin
 			grant_read = 1;
+			reading=0;
 		end
 
 		if(grant_write) begin
@@ -151,6 +147,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		end
 		if(writing && complete2) begin
 			grant_write = 1;
+			writing=0;
 		end
 		if(InsertBubble) $display("STALLED");
 	end
