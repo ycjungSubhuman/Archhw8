@@ -70,7 +70,12 @@ Active_lib=
 .\src\Stage2.v=Verilog Source Code
 .\src\Stage3.v=Verilog Source Code
 .\src\Stage4.v=Verilog Source Code
-.\src\memory_hlt_added.v=Verilog Source Code
 .\src\Stage5.v=Verilog Source Code
 .\src\Memory.v=Verilog Source Code
 
+[SpecTracer]
+WindowVisible=0
+[HierarchyViewer]
+HierarchyInformation=
+ShowHide=ShowTopLevel
+Selected=
