@@ -1,4 +1,4 @@
-Active-HDL 10.3.3559.6081  2017-05-17 02:13:35
+Active-HDL 10.3.3559.6081  2017-05-17 03:03:12
 
 Elaboration top modules:
 Verilog Module                cpu_TB
@@ -29,9 +29,3 @@ Library                 | Comment
 ---------------------------------------------------------------------------------------------
 hw8_cache               | None
 ---------------------------------------------------------------------------------------------
-
-
-Simulation Options: asim -O5 +access +r +m+cpu_TB cpu_TB
-
-
-The performance of simulation is reduced. Version Student Edition
