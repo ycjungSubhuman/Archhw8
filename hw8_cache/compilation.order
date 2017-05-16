@@ -1,0 +1,16 @@
+.\src\ALU.v
+.\src\Cache.v
+.\src\Control.v
+.\src\cpu.v
+.\src\cpu_TB.v
+.\src\Datapath.v
+.\src\Forward.v
+.\src\Hazard.v
+.\src\opcodes.v
+.\src\register_files.v
+.\src\Stage1.v
+.\src\Stage2.v
+.\src\Stage3.v
+.\src\Stage4.v
+.\src\Stage5.v
+.\src\Memory.v

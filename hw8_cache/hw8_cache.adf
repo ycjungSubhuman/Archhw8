@@ -1,0 +1,75 @@
+[Project]
+Current Flow=Generic
+VCS=0
+version=3
+Current Config=compile
+
+[Configurations]
+compile=hw8_cache
+
+[Library]
+hw8_cache=.\hw8_cache\hw8_cache.lib
+
+[Settings]
+AccessRead=0
+AccessReadWrite=0
+AccessACCB=0
+AccessACCR=0
+AccessReadWriteSLP=0
+AccessReadTopLevel=1
+DisableC=1
+ENABLE_ADV_DATAFLOW=0
+FLOW_TYPE=HDL
+LANGUAGE=VHDL
+REFRESH_FLOW=1
+FLOWTOOLS=NONE
+FAMILY=
+fileopenfolder=C:\My_Designs\hw8\hw8\src
+
+[LocalVerilogSets]
+EnableSLP=1
+EnableDebug=0
+
+[LocalVhdlSets]
+CompileWithDebug=0
+
+[$LibMap$]
+hw8_cache=.
+Active_lib=
+
+[Files]
+/ALU.v=-1
+/Cache.v=-1
+/Control.v=-1
+/cpu.v=-1
+/cpu_TB.v=-1
+/Datapath.v=-1
+/Forward.v=-1
+/Hazard.v=-1
+/opcodes.v=-1
+/register_files.v=-1
+/Stage1.v=-1
+/Stage2.v=-1
+/Stage3.v=-1
+/Stage4.v=-1
+/Stage5.v=-1
+/Memory.v=-1
+
+[Files.Data]
+.\src\ALU.v=Verilog Source Code
+.\src\Cache.v=Verilog Source Code
+.\src\Control.v=Verilog Source Code
+.\src\cpu.v=Verilog Source Code
+.\src\cpu_TB.v=Verilog Source Code
+.\src\Datapath.v=Verilog Source Code
+.\src\Forward.v=Verilog Source Code
+.\src\Hazard.v=Verilog Source Code
+.\src\Memory.v=Verilog Source Code
+.\src\opcodes.v=Verilog Source Code
+.\src\register_files.v=Verilog Source Code
+.\src\Stage1.v=Verilog Source Code
+.\src\Stage2.v=Verilog Source Code
+.\src\Stage3.v=Verilog Source Code
+.\src\Stage4.v=Verilog Source Code
+.\src\Stage5.v=Verilog Source Code
+
