@@ -48,6 +48,9 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 	assign i_data = i_readM?`WORD_SIZE'bz:i_inputData;
 	assign d_data = d_readM?`WORD_SIZE'bz:d_inputData;
 	
+	reg [`WORD_SIZE-1:0] totalexecution;
+	reg [`WORD_SIZE-1:0] hitcount;
+	
 	initial begin
 		misscycle1 = 0;
 		misscycle2 = 0;
@@ -65,6 +68,8 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 		complete1 = 0;
 		complete2 = 0;
 		writeData = 0;
+		totalexecution = 0;
+		hitcount = 0;
 		valid[0] = 0; valid[1] = 0; valid[2] = 0; valid[3] = 0;
 		dirty[0] = 0; dirty[1] = 0; dirty[2] = 0; dirty[3] = 0;
 	end
@@ -77,6 +82,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 					//$display("address1 %x, OutputData1: %x", address1, outputData1);
 					complete1 = 1;
 					readMed1 = 0;
+					hitcount = hitcount+1;
 				end
 				else begin
 					if(dirty[address1[3:2]] == 1) begin
@@ -91,6 +97,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 						i_address = {address1[15:2], 2'b00};
 					end
 					complete1 = 0;
+					hitcount = hitcount-1;
 				end
 			end
 		end							   
@@ -102,33 +109,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 						//$display("address2 %x, OutputData2: %x", address2, outputData2);
 						complete2 = 1;
 						readMed2 = 0;
-					end
-					else begin
-						if(dirty[address2[3:2]] == 1) begin
-							misscycle2 = 1;
-							d_writeM = 1;
-							d_inputData = data[address2[3:2]*4];
-							d_address = {tag[address2[3:2]], address2[3:2], 2'b00};
-						end
-						else begin
-							misscycle2 = 5;
-							d_readM = 1;
-							d_address = {address2[15:2], 2'b00};
-						end
-						complete2 = 0; 
-					end
-				end
-			end
-		end
-		else if(writeMed2 == 1) begin
-			if(misscycle2 == 0)	begin
-				if(readMed1 == 0 ||  (address1[3:2] != address2[3:2])) begin
-					if(tag[address2[3:2]] == address2[15:4] && valid[address2[3:2]] == 1) begin
-						//$display("address[3:2]*4+address2[1:0]: %x, WriteData: %x", address2[3:2]*4+address2[1:0], writeData);
-						data[address2[3:2]*4+address2[1:0]] = writeData;
-						dirty[address2[3:2]] = 1;
-						complete2 = 1;
-						writeMed2 = 0;
+						hitcount = hitcount+1;
 					end
 					else begin
 						if(dirty[address2[3:2]] == 1) begin
@@ -143,6 +124,36 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 							d_address = {address2[15:2], 2'b00};
 						end
 						complete2 = 0;
+						hitcount = hitcount-1; 
+					end
+				end
+			end
+		end
+		else if(writeMed2 == 1) begin
+			if(misscycle2 == 0)	begin
+				if(readMed1 == 0 ||  (address1[3:2] != address2[3:2])) begin
+					if(tag[address2[3:2]] == address2[15:4] && valid[address2[3:2]] == 1) begin
+						//$display("address[3:2]*4+address2[1:0]: %x, WriteData: %x", address2[3:2]*4+address2[1:0], writeData);
+						data[address2[3:2]*4+address2[1:0]] = writeData;
+						dirty[address2[3:2]] = 1;
+						complete2 = 1;
+						writeMed2 = 0;
+						hitcount = hitcount+1;
+					end
+					else begin
+						if(dirty[address2[3:2]] == 1) begin
+							misscycle2 = 1;
+							d_writeM = 1;
+							d_inputData = data[address2[3:2]*4];
+							d_address = {tag[address2[3:2]], address2[3:2], 2'b00};
+						end
+						else begin
+							misscycle2 = 5;
+							d_readM = 1;
+							d_address = {address2[15:2], 2'b00};
+						end
+						complete2 = 0;
+						hitcount = hitcount-1;
 					end
 				end
 			end
@@ -150,16 +161,20 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 		if(readM1 == 1) begin
 			readMed1 = 1;
 			complete1 = 0;
+			totalexecution = totalexecution+1;
 		end
 		if(readM2 == 1) begin
 			readMed2 = 1;
 			complete2 = 0;
+			totalexecution = totalexecution+1;
 		end
 		if(writeM2 == 1) begin
 			writeMed2 = 1;
 			complete2 = 0;
-			writeData = data2; 
-		end					 
+			writeData = data2;
+			totalexecution = totalexecution+1; 
+		end
+		$display("TotalExecution: %d, HitCount: %d", totalexecution, hitcount);
 	end
 	
 	always @(posedge clk) begin
@@ -205,6 +220,9 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 			tag[address1[3:2]] = address1[15:4];
 			valid[address1[3:2]] = 1;
 			i_readM = 0;
+			misscycle1 = 9;
+		end
+		else if(misscycle1 == 9) begin
 			misscycle1 = 0;
 		end
 		if(readMed1 == 0 || (address1[3:2] != address2[3:2])) begin
@@ -250,6 +268,9 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 				tag[address2[3:2]] = address2[15:4];
 				valid[address2[3:2]] = 1;
 				d_readM = 0;
+				misscycle2 = 9;
+			end
+			else if(misscycle2 == 9) begin
 				misscycle2 = 0;
 			end
 		end
