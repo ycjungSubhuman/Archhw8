@@ -58,7 +58,7 @@ module cpu(Clk, Reset_N, i_readM, i_address, i_data, d_readM, d_writeM, d_addres
 		.reset_n(Reset_N), .clk(Clk), .output_port(output_port), .is_halted(is_halted), .stalled(stalled), .flushed(flushed), .valid(valid), .complete1(complete1), .complete2(complete2), .MEM_WB_Write(MEM_WB_Write), .bubtoStall(bubtoStall));
 
 		cache cachee (
-			.address1(i_address), .data1(i_data), .readM1(i_readM), .address2(d_address), .data2(d_data), .readM2(d_readM), .writeM2(d_writeM),
+			.address1save(i_address), .data1(i_data), .readM1(i_readM), .address2save(d_address), .data2(d_data), .readM2(d_readM), .writeM2(d_writeM),
 			.complete1(complete1), .complete2(complete2), .clk(Clk), .reset_n(Reset_N)
 			);
 

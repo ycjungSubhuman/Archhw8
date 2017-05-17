@@ -55,6 +55,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			MEM_WB_Write = 0;
 			InsertBubble = 0;
 			reading_inst = 1;
+			$display("ohoho3");
 
 		end
 		if(reading_inst && complete1) begin
@@ -87,21 +88,24 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
 			InsertBubble = 0;
-			writing = 1; 				
+			writing = 1;
+			$display("ohoho1");
 		end
 		if(writing && complete2) begin
 			writing = 0;
 			grant_write = 1;
+			$display("reading %x", reading);
 		end
 		
 		
-		if((grant_inst && !reading && !writing) || (grant_read && !reading_inst && !writing) || (grant_write && !reading_inst && !reading)) begin
+		if((grant_inst && !reading && !writing) || (grant_read && !reading_inst && !writing) || (grant_write && !reading_inst && !reading) || (!reading && !reading_inst && !writing)) begin
 		  	PcWrite = 1;
 			IF_ID_Write = 1;
 			ID_EX_Write = 1;
 			EX_MEM_Write = 1;
 			MEM_WB_Write = 1;
 			InsertBubble = 0;
+			$display("grant");
 		end
 				/* stalling for d read prepare*/
 		if(ID_EX_MemRead || ID_EX_MemWrite) begin
@@ -124,6 +128,8 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 	end
 
 	always @(posedge clk) begin
+		$display("%x %x %x", reading_inst, reading, writing);
+		if(complete2) $display(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>COMPLETE2<<<<<<<<<<<<<<<<<<<<<<<<<");
 		if(grant_inst) begin
 			grant_inst = 0;
 		end
@@ -146,6 +152,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			MEM_WB_Write = 0;
 			InsertBubble = 0;
 			bubtoStall = 0;
+			$display("ohoho2");
 		end
 		else begin
 			bubtoStall = 0;
