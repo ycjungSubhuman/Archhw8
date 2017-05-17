@@ -174,7 +174,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 			writeData = data2;
 			totalexecution = totalexecution+1; 
 		end
-		$display("TotalExecution: %d, HitCount: %d", totalexecution, hitcount);
+		//$display("TotalExecution: %d, HitCount: %d", totalexecution, hitcount);
 	end
 	
 	always @(posedge clk) begin
@@ -274,6 +274,8 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 				misscycle2 = 0;
 			end
 		end
+		complete1 = 0;
+		complete2 = 0;
 		//$display("complete1: %x, readMed1: %x, misscycle1: %x, i_writeM: %x, address1: %x, tag[address1[3:2]]: %x, i_address: %x", complete1, readMed1, misscycle1, i_readM, address1, tag[address1[3:2]], i_address);
 		//$display("complete2: %x, writeM2: %x, writeMed2: %x, misscycle2: %x, d_writeM: %x, address2: %x, tag[address2[3:2]]: %x, d_address: %x, writeData: %x", complete2, writeM2, writeMed2, misscycle2, d_writeM, address2, tag[address2[3:2]], d_address, writeData);
 		//$display("data: (%x, %x, %x, %x), (%x, %x, %x, %x), (%x, %x, %x, %x), (%x, %x, %x, %x)", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]);
