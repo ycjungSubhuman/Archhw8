@@ -11,14 +11,15 @@
 module Datapath (
 	readM1, address1, data1,
 	readM2, writeM2, address2, data2,
-	reset_n, clk, output_port, is_halted, stalled, flushed, valid, complete1, complete2, MEM_WB_Write);
+	reset_n, clk, output_port, is_halted, stalled, flushed, valid, complete1, complete2, MEM_WB_Write, bubtoStall);
 
 	output wire readM1;
 	output [`WORD_SIZE-1:0] address1;
 	inout [`WORD_SIZE-1:0] data1;
 	assign data1 = 16'bz;
 	output stalled;
-	output flushed;
+	output flushed;				
+	output bubtoStall;
 	output MEM_WB_Write;
 
 	output readM2;
@@ -134,7 +135,7 @@ module Datapath (
 
 	Stage1 st1(PcUpdateTarget, PCMux, Pc_1_2, PcWrite, inst, readM1, address1, data1, clk, reset_n);
 
-	Hazard hzd(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, InsertBubble, MemRead_3_4, MemWrite_3_4, clk, complete1, complete2, readM1, readM2, writeM2);
+	Hazard hzd(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, InsertBubble, MemRead_3_4, MemWrite_3_4, clk, complete1, complete2, readM1, readM2, writeM2, bubtoStall);
 
 	Stage2 st2(Pc_1_2, inst,
 	ReadData1, ReadData2, ImmediateExtended, Rs, Rt, Rd, Pc_2_3,

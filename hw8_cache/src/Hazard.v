@@ -1,4 +1,4 @@
-module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, InsertBubble, ID_EX_MemRead, ID_EX_MemWrite, clk, complete1, complete2, i_readM, d_readM, d_writeM);
+module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, InsertBubble, ID_EX_MemRead, ID_EX_MemWrite, clk, complete1, complete2, i_readM, d_readM, d_writeM, bubtoStall);
 
 	output reg PcWrite;
 	output reg IF_ID_Write;
@@ -14,6 +14,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 	input i_readM;
 	input d_readM;
 	input d_writeM;
+	output bubtoStall;
 
 	reg reading_inst;
 	reg grant_inst;
@@ -109,8 +110,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			ID_EX_Write = 1;
 			EX_MEM_Write = 1;
 			MEM_WB_Write = 1;
-			InsertBubble = 1;
-//			reading = 1;			   
+			InsertBubble = 1;		   
 		end
 		else if(!reading && !reading_inst && !writing) begin
 			PcWrite = 1;
@@ -147,7 +147,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			InsertBubble = 0;
 			bubtoStall = 0;
 		end
-		else if(!reading_inst) begin
+		else begin
 			bubtoStall = 0;
 		end
 		if(InsertBubble) bubtoStall = 1;

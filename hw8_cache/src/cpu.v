@@ -50,11 +50,12 @@ module cpu(Clk, Reset_N, i_readM, i_address, i_data, d_readM, d_writeM, d_addres
 	wire complete1;
 	wire complete2;
 	wire MEM_WB_Write;
+	wire bubtoStall;
 
     Datapath dpath (
 		.readM1(i_readM), .address1(i_address), .data1(i_data),
 		.readM2(d_readM), .writeM2(d_writeM), .address2(d_address), .data2(d_data),
-		.reset_n(Reset_N), .clk(Clk), .output_port(output_port), .is_halted(is_halted), .stalled(stalled), .flushed(flushed), .valid(valid), .complete1(complete1), .complete2(complete2), .MEM_WB_Write(MEM_WB_Write));
+		.reset_n(Reset_N), .clk(Clk), .output_port(output_port), .is_halted(is_halted), .stalled(stalled), .flushed(flushed), .valid(valid), .complete1(complete1), .complete2(complete2), .MEM_WB_Write(MEM_WB_Write), .bubtoStall(bubtoStall));
 
 		cache cachee (
 			.address1(i_address), .data1(i_data), .readM1(i_readM), .address2(d_address), .data2(d_data), .readM2(d_readM), .writeM2(d_writeM),

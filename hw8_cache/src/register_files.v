@@ -30,7 +30,7 @@ module RegisterFiles(ctrlRegWrite, readReg1, readReg2, writeReg, writeData, clk,
 			readData2 = writeData;
 		else
 			readData2 = registers[readReg2];
-		//$display("r0: %x, r1: %x, r2: %x, r3: %x", registers[0], registers[1], registers[2], registers[3]);;
+		$display("r0: %x, r1: %x, r2: %x, r3: %x", registers[0], registers[1], registers[2], registers[3]);;
 	end
 	
 	always @(posedge clk) begin
