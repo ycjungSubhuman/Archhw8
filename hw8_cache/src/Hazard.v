@@ -61,7 +61,6 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 		if(reading_inst && complete1) begin
 			reading_inst = 0;
 			grant_inst = 1;
-
 		end
 
 
@@ -144,14 +143,14 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			grant_write = 0;
 		end
 
-		if(bubtoStall && reading_inst) begin 
+		if(InsertBubble && reading_inst) begin 
 			PcWrite = 0;
 			IF_ID_Write = 0;
 			ID_EX_Write = 0;
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
 			InsertBubble = 0;
-			bubtoStall = 0;
+			bubtoStall = 1;
 			$display("ohoho2");
 		end
 		else begin

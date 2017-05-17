@@ -78,28 +78,34 @@ module cache (address1save, data1, readM1, complete1, address2save, data2, readM
 	
 	always @(*) begin
 		if(writeMed2 == 1) begin
+			$display("WriteMED");
+			$display("misscycle2 : %x", misscycle2);
 			if(misscycle2 == 0)	begin
 				if(readMed1 == 0 ||  (address1[3:2] != address2[3:2])) begin
 					if(tag[address2[3:2]] == address2[15:4] && valid[address2[3:2]] == 1) begin
 						$display("address[3:2]*4+address2[1:0]: %x, WriteData: %x", address2[3:2]*4+address2[1:0], writeData);
 						data[address2[3:2]*4+address2[1:0]] = writeData;
 						dirty[address2[3:2]] = 1;
+						$display("SET1");
 						complete2 = 1;
 						writeMed2 = 0;
 						hitcount = hitcount+1;
 					end
 					else begin
 						if(dirty[address2[3:2]] == 1) begin
+							$display("WriteMED1");
 							misscycle2 = 1;
 							d_writeM = 1;
 							d_inputData = data[address2[3:2]*4];
 							d_address = {tag[address2[3:2]], address2[3:2], 2'b00};
 						end
-						else begin
+					else begin 
+						$display("WriteMED2");
 							misscycle2 = 5;
 							d_readM = 1;
 							d_address = {address2[15:2], 2'b00};
 						end
+						if(complete2) $display("zeroed 1");
 						complete2 = 0;
 						hitcount = hitcount-1;
 					end
@@ -112,6 +118,7 @@ module cache (address1save, data1, readM1, complete1, address2save, data2, readM
 					if(tag[address2[3:2]] == address2[15:4] && valid[address2[3:2]] == 1) begin
 						outputData2 = data[address2[3:2]*4+address2[1:0]];
 						$display("address2 %x, OutputData2: %x", address2, outputData2);
+						$display("SET2");
 						complete2 = 1;
 						readMed2 = 0;
 						hitcount = hitcount+1;
@@ -128,6 +135,7 @@ module cache (address1save, data1, readM1, complete1, address2save, data2, readM
 							d_readM = 1;
 							d_address = {address2[15:2], 2'b00};
 						end
+						if(complete2) $display("zeroed 2");
 						complete2 = 0;
 						hitcount = hitcount-1; 
 					end
@@ -162,8 +170,10 @@ module cache (address1save, data1, readM1, complete1, address2save, data2, readM
 		end
 		if(writeM2 == 1) begin
 			writeMed2 = 1;
+			if(complete2) $display("zeroed 3");
 			complete2 = 0;
 			writeData = data2;
+			$display("##################################################data2 %x", data2);
 			address2 = address2save;
 			totalexecution = totalexecution+1; 
 		end			 																																																																																																  
@@ -175,6 +185,7 @@ module cache (address1save, data1, readM1, complete1, address2save, data2, readM
 		end
 		if(readM2 == 1) begin
 			readMed2 = 1;
+			if(complete2) $display("zeroed 4");
 			complete2 = 0;
 			address2 = address2save;
 			totalexecution = totalexecution+1;
