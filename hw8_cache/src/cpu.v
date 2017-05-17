@@ -68,7 +68,7 @@ module cpu(Clk, Reset_N, i_readM, i_address, i_data, d_readM, d_writeM, d_addres
 			num_inst += 1;
 		end
 	//else $display("SKIPPING");
-		$display("Complete1, 2: %x, %x", complete1, complete2);
+		//$display("Complete1, 2: %x, %x", complete1, complete2);
 	end
 
 endmodule

@@ -26,6 +26,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 	reg [3:0] dirty;
 	
 	reg i_readM;
+	reg i_writeM;
 	reg [`WORD_SIZE-1:0] i_address;
 	wire [`WORD_SIZE-1:0] i_data;
 	reg d_readM;
@@ -51,6 +52,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 		misscycle1 = 0;
 		misscycle2 = 0;
 		i_readM = 0;
+		i_writeM = 0;
 		d_readM = 0;
 		d_writeM = 0;
 		outputData1 = 0;
@@ -72,13 +74,14 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 			if(misscycle1 == 0) begin
 				if(tag[address1[3:2]] == address1[15:4] && valid[address1[3:2]] == 1) begin
 					outputData1 = data[address1[3:2]*4+address1[1:0]];
+					//$display("address1 %x, OutputData1: %x", address1, outputData1);
 					complete1 = 1;
 					readMed1 = 0;
 				end
 				else begin
-					if(dirty[address2[3:2]] == 1) begin
+					if(dirty[address1[3:2]] == 1) begin
 						misscycle1 = 1;
-						i_readM = 1;
+						i_writeM = 1;
 						i_inputData = data[address1[3:2]*4];
 						i_address = {tag[address1[3:2]], address1[3:2], 2'b00};
 					end
@@ -96,6 +99,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 				if(readMed1 == 0 ||  (address1[3:2] != address2[3:2])) begin
 					if(tag[address2[3:2]] == address2[15:4] && valid[address2[3:2]] == 1) begin
 						outputData2 = data[address2[3:2]*4+address2[1:0]];
+						//$display("address2 %x, OutputData2: %x", address2, outputData2);
 						complete2 = 1;
 						readMed2 = 0;
 					end
@@ -120,7 +124,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 			if(misscycle2 == 0)	begin
 				if(readMed1 == 0 ||  (address1[3:2] != address2[3:2])) begin
 					if(tag[address2[3:2]] == address2[15:4] && valid[address2[3:2]] == 1) begin
-						$display("address[3:2]*4+address2[1:0]: %x, WriteData: %x", address2[3:2]*4+address2[1:0], writeData);
+						//$display("address[3:2]*4+address2[1:0]: %x, WriteData: %x", address2[3:2]*4+address2[1:0], writeData);
 						data[address2[3:2]*4+address2[1:0]] = writeData;
 						dirty[address2[3:2]] = 1;
 						complete2 = 1;
@@ -135,7 +139,7 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 						end
 						else begin
 							misscycle2 = 5;
-							d_writeM = 1;
+							d_readM = 1;
 							d_address = {address2[15:2], 2'b00};
 						end
 						complete2 = 0;
@@ -160,28 +164,28 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 	
 	always @(posedge clk) begin
 		if(misscycle1 == 1) begin
-			d_inputData = data[address1[3:2]*4+1];	  
-			d_address = {tag[address1[3:2]], address1[3:2], 2'b01};
+			i_inputData = data[address1[3:2]*4+1];	  
+			i_address = {tag[address1[3:2]], address1[3:2], 2'b01};
 			misscycle1 = 2;
 		end
 		else if(misscycle1 == 2) begin
-			d_inputData = data[address1[3:2]*4+2];	  
-			d_address = {tag[address1[3:2]], address1[3:2], 2'b10};
+			i_inputData = data[address1[3:2]*4+2];	  
+			i_address = {tag[address1[3:2]], address1[3:2], 2'b10};
 			misscycle1 = 3;
 		end
 		else if(misscycle1 == 3) begin
-			d_inputData = data[address1[3:2]*4+3];	  	
-			d_address = {tag[address1[3:2]], address1[3:2], 2'b11};
+			i_inputData = data[address1[3:2]*4+3];	  	
+			i_address = {tag[address1[3:2]], address1[3:2], 2'b11};
 			misscycle1 = 4;
 		end
-		else if(misscycle1 == 4) begin			   		  
-			d_writeM = 0;
-			d_readM = 1;
-			d_address = {address2[15:2], 2'b00};
+		else if(misscycle1 == 4) begin
+			i_readM = 1;
+			i_writeM = 0;
+			i_address = {address1[15:2], 2'b00};
 			dirty[address1[3:2]] = 0;
 			misscycle1 = 5;
 		end
-	else if(misscycle1 == 5) begin
+		else if(misscycle1 == 5) begin
 			data[address1[3:2]*4] = i_data;
 			i_address = {address1[15:2], 2'b01};
 			misscycle1 = 6;	
@@ -249,10 +253,10 @@ module cache (address1, data1, readM1, complete1, address2, data2, readM2, write
 				misscycle2 = 0;
 			end
 		end
-		$display("complete1: %x, readMed1: %x, misscycle1: %x, i_writeM: %x, address1: %x, tag[address1[3:2]]: %x, i_address: %x", complete1, readMed1, misscycle1, i_readM, address1, tag[address1[3:2]], i_address);
-		$display("complete2: %x, writeM2: %x, writeMed2: %x, misscycle2: %x, d_writeM: %x, address2: %x, tag[address2[3:2]]: %x, d_address: %x, writeData: %x", complete2, writeM2, writeMed2, misscycle2, d_writeM, address2, tag[address2[3:2]], d_address, writeData);
-		$display("data: (%x, %x, %x, %x), (%x, %x, %x, %x), (%x, %x, %x, %x), (%x, %x, %x, %x)", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]);
+		//$display("complete1: %x, readMed1: %x, misscycle1: %x, i_writeM: %x, address1: %x, tag[address1[3:2]]: %x, i_address: %x", complete1, readMed1, misscycle1, i_readM, address1, tag[address1[3:2]], i_address);
+		//$display("complete2: %x, writeM2: %x, writeMed2: %x, misscycle2: %x, d_writeM: %x, address2: %x, tag[address2[3:2]]: %x, d_address: %x, writeData: %x", complete2, writeM2, writeMed2, misscycle2, d_writeM, address2, tag[address2[3:2]], d_address, writeData);
+		//$display("data: (%x, %x, %x, %x), (%x, %x, %x, %x), (%x, %x, %x, %x), (%x, %x, %x, %x)", data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13], data[14], data[15]);
 	end
 	
-	Memory NUUT(!clk, reset_n, i_readM, 1'b0, i_address, i_data, d_readM, d_writeM, d_address, d_data);
+	Memory NUUT(!clk, reset_n, i_readM, i_writeM, i_address, i_data, d_readM, d_writeM, d_address, d_data);
 endmodule

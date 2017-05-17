@@ -190,7 +190,7 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			grant_write = 1;
 			writing=0;
 		end
-		if(InsertBubble && !IF_ID_Write) $display("Bubble");
-		else $display("NoBubble");
+		//if(InsertBubble && !IF_ID_Write) $display("Bubble");
+		//else $display("NoBubble");
 	end
 endmodule

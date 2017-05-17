@@ -107,7 +107,7 @@ module Stage4(EX_MEM_Write, Pc,
 			RegWrite_REG = RegWrite;
 			IsHalted_REG = IsHalted;
 			PCMux_REG = PCMux; 
-			$display("))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))PCMux_REG: %x", PCMux_REG);
+			//$display("))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))PCMux_REG: %x", PCMux_REG);
 			Valid_REG = Valid;
 			OutputData_REG = OutputData;
 		end
@@ -128,8 +128,8 @@ module Stage4(EX_MEM_Write, Pc,
 			readM = 0;
 			writeM = 0;
 		end
-		if(readM) $display("*******READ START*******");
-		if(writeM) $display("*******WRITE START*******at %x data: %x", address, writeBuf);
+		//if(readM) $display("*******READ START*******");
+		//if(writeM) $display("*******WRITE START*******at %x data: %x", address, writeBuf);
 		if(!reset_n) begin
 			Pc_REG = Pc;
 			ALUOut_REG = 0;

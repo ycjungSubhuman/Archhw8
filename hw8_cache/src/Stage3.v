@@ -133,7 +133,7 @@ module Stage3(ID_EX_Write, Pc,
 		else if(ControlA == 2) operandA = WB_RegWriteData;
 		if(ALUSrc_REG == 1)	operandB = ImmediateExtended_REG;
 		else if(BranchProperty_REG == 2 || BranchProperty_REG == 3)	begin
-			$display("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^HOHOHOHOHOHOHOHOHOHOHOH");
+			//$display("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^HOHOHOHOHOHOHOHOHOHOHOH");
 			operandB = 0;
 		end
 		else begin
@@ -161,7 +161,7 @@ module Stage3(ID_EX_Write, Pc,
 		if(IsLHI_REG == 0) ALUOut = ALUInterOut;
 		else if(IsLHI_REG == 1) begin
 			ALUOut = ImmediateExtended_REG << 8;
-			$display("holololo %x", ALUOut);
+			//$display("holololo %x", ALUOut);
 		end
 		//$display("OperandA: %x, OperandB: %x, IsLHI_REG: %x, OutputPortWrite_REG: %x, RegWrite_REG: %x, ALUOut: %x, ALUOp: %x, RegWriteTarget: %x, ControlA: %x, ControlB: %x",
 		//	operandA, operandB, IsLHI_REG, OutputPortWrite_REG, RegWrite_REG, ALUOut, ALUOp, RegWriteTarget, ControlA, ControlB);
@@ -180,7 +180,7 @@ module Stage3(ID_EX_Write, Pc,
 	end
 
 	always @(posedge clk) begin
-		$display("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<BranchCond, IsBranch_REG, IsJump_REG %x %x %x", BranchCond, IsBranch_REG, IsJump_REG);
+		//$display("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<BranchCond, IsBranch_REG, IsJump_REG %x %x %x", BranchCond, IsBranch_REG, IsJump_REG);
 		if(ID_EX_Write) begin
 			Pc_REG = Pc;
 			ReadData1_REG = ReadData1;

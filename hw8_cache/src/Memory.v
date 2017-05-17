@@ -245,8 +245,14 @@ module Memory(clk, reset_n, i_readM, i_writeM, i_address, i_data, d_readM, d_wri
 				if(i_readM) begin
 					i_outputData <= memory[i_address];
 				end
-				if(i_writeM)memory[i_address] <= i_data;
-				if(d_readM)d_outputData <= memory[d_address];
+				if(i_writeM) begin
+					memory[i_address] <= i_data;
+					//$display("i_address: %x, i_data: %x", i_address, i_data);
+				end
+				if(d_readM) begin
+					d_outputData <= memory[d_address];
+					//$display("d_address: %x, d_data: %x", d_address, d_outputData);
+				end
 				if(d_writeM)memory[d_address] <= d_data;
 			end
 endmodule

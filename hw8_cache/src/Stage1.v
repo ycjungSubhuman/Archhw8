@@ -24,7 +24,7 @@ module Stage1(PcUpdateTarget, PCMux, Pc, PcWrite, inst, readM, address, data, cl
 	
 	always @(data) begin
 		inst = data;
-		$display("inst: %x, address: %x", inst, address);
+		//$display("inst: %x, address: %x", inst, address);
 	end
 	
 	always @(posedge clk) begin
