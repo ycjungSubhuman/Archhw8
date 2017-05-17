@@ -54,18 +54,12 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			MEM_WB_Write = 0;
 			InsertBubble = 0;
 			reading_inst = 1;
-			$display("reading_inst start");
+
 		end
 		if(reading_inst && complete1) begin
-			PcWrite = 1;
-			IF_ID_Write = 1;
-			ID_EX_Write = 1;
-			EX_MEM_Write = 1;
-			MEM_WB_Write = 1;
-			InsertBubble = 0;
 			reading_inst = 0;
 			grant_inst = 1;
-			$display("read complete");
+
 		end
 
 
@@ -76,17 +70,13 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			EX_MEM_Write = 0;
 			MEM_WB_Write = 0;
 			InsertBubble = 0;
-			reading = 1;			  
+			reading = 1;
+			$display("reading start");		  
 		end
 		if(reading && complete2) begin
-			PcWrite = 1;
-			IF_ID_Write = 1;
-			ID_EX_Write = 1;
-			EX_MEM_Write = 1;
-			MEM_WB_Write = 1;
-			InsertBubble = 0;
 			reading = 0;
 			grant_read = 1;
+			$display("read complete");
 		end
 		
 		if(!grant_write && d_writeM) begin
@@ -99,14 +89,18 @@ module Hazard(PcWrite, IF_ID_Write, ID_EX_Write, EX_MEM_Write, MEM_WB_Write, Ins
 			writing = 1; 				
 		end
 		if(writing && complete2) begin
-			PcWrite = 1;
+			writing = 0;
+			grant_write = 1;
+		end
+		
+		
+		if((grant_inst && !reading && !writing) || (grant_read && !reading_inst && !writing) || (grant_write && !reading_inst && !reading)) begin
+		  	PcWrite = 1;
 			IF_ID_Write = 1;
 			ID_EX_Write = 1;
 			EX_MEM_Write = 1;
 			MEM_WB_Write = 1;
 			InsertBubble = 0;
-			writing = 0;
-			grant_write = 1;
 		end
 				/* stalling for d read prepare*/
 		if(ID_EX_MemRead || ID_EX_MemWrite) begin

@@ -89,7 +89,7 @@ module Stage4(EX_MEM_Write, Pc,
 	end
 
 	always@(*) begin
-		//$display("READDATA: %x ADDRESS: %x,", data, address);
+		$display("READDATA: %x ADDRESS: %x,", data, address);
 		//if(IsFlush_OUT) $display("))))))))))))))))))))))))) PC+1: %x", Pc_REG);
 		MemData = data;
 	end
